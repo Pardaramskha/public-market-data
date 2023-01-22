@@ -1,46 +1,34 @@
-# Getting Started with Create React App
+# Public Market Data (exercice)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was made as a technical test for a junior frontend job.
 
-## Available Scripts
+## 👁 Task overview
 
-In the project directory, you can run:
+### Goal
+* Retrieve and display market data for a selected pair from Kukoin public API.
 
-### `npm start`
+### Specifications
+* Users should be able to use a form to select the currency pair to query.
+* Upon submitting the form, fetch public market data (tick, get 24h tick, trades) for the
+  selected pair from Kucoin public REST api.
+* Users should be able to sort trades data by time & filter based on side.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Requirements
+* Use React with Typescript
+* Use any styling solution (preferably styled-components)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## ⚠ Usage warning (API calls errors)
+Doing this was especially painful due to Kucoin "public" API. Every wannabe public endpoint was blocked by CORS policy, making it impossible to retrieve any data without, for example, a proxy.
 
-### `npm test`
+I did have to use **a CORS bypassing plugin** in order to make it work. Do NOT do this, for it's like playing with an armed grenade.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ☑ How it went...
+* Met most project requirements
+* I didn't know anything about cryptos or finance when starting this, so I had to deal with frightening words.
+* I used **Material UI** instead of **styled-components** for its powerful Autocomplete and Tabs components.
+* I learned how to use **react-query** in the meantime - this stuff is good when you have to deal with loading states!
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## ❓ What could have been done
+* Could've use a **.env** file to store API base endpoint
+* Could've use **eCharts** to display data properly
+* Could've use **redux** for state management (too complex to do within given deadline)
