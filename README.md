@@ -20,7 +20,7 @@ This project was made as a technical test for a junior frontend job.
 ## ⚠ Usage warning (API calls errors)
 Doing this was especially painful due to Kucoin "public" API. Every wannabe public endpoint was blocked by CORS policy, making it impossible to retrieve any data without, for example, a proxy.
 
-I did have to use **a CORS bypassing plugin** in order to make it work. Do NOT do this, for it's like playing with an armed grenade.
+I had to use **a CORS bypassing plugin** in order to make it work. Do NOT do this, for this is the tech equivalent of playing with an armed grenade while dancing swing and stuff...
 
 ## ☑ How it went...
 * Met most project requirements
