@@ -36,7 +36,7 @@ export default function TradesDisplay(props: any) {
 
         if (!!symbol) {
             if (status === "error") setError("Error while retrieving pair trades data")
-            if (!!data) setTradesData(data.data); console.log(data)
+            if (!!data) setTradesData(data.data)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, status])
