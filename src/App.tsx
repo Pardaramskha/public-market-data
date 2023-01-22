@@ -1,9 +1,10 @@
 import React from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom"
+// Pages
 import Home from "./pages/Home";
-import {QueryClient, QueryClientProvider} from "react-query";
-import {ReactQueryDevtools} from "react-query/devtools";
 import PairDetails from "./pages/PairDetails";
+// Providers
+import {QueryClient, QueryClientProvider} from "react-query";
 
 const queryClient = new QueryClient()
 
@@ -19,7 +20,6 @@ function App() {
                   <Route path={"/details/:symbol"} element={<PairDetails />} />
               </Routes>
           </BrowserRouter>
-          <ReactQueryDevtools />
       </QueryClientProvider>
     </>
   );

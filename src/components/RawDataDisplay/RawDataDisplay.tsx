@@ -14,7 +14,7 @@ export default function RawDataDisplay(props: any) {
                 {title}
             </Typography>
             <Typography variant={"h6"} component={"p"} fontWeight={700} color={primary ? "primary" : "text"}>
-                {data}
+                {!!data ? data : "No data"}
             </Typography>
         </Paper>
     )

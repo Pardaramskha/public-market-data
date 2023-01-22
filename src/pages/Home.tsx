@@ -1,22 +1,25 @@
 import React, {FormEvent, useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom"
 // API
-import {APIGet} from "../api/apiCalls"
+import {fetchSymbolsList} from "../api/apiCalls"
 // MUI
-import {Autocomplete, Button, Container, Grid, Paper, TextField, Typography} from "@mui/material";
+import {Autocomplete, Button, Container, Grid, Paper, Skeleton, TextField, Typography} from "@mui/material";
 // Components
 import ErrorAlert from "../components/ErrorAlert/ErrorAlert"
-
+// Queries
+import {useQuery} from "react-query";
 
 export default function Home() {
 
     const navigate = useNavigate()
+    const { data, status } = useQuery('symbolsList', fetchSymbolsList)
 
     // states
     const [symbols, setSymbols] = useState<string[]>([])
     const [selectedSymbol, setSelectedSymbol] = useState<any>("a")
     // autocomplete
     const [autocompleteValue, setAutocompleteValue] = useState<any>("")
+    // error management
     // could be replaced by global error management system
     const [error, setError] = useState<string>("")
 
@@ -28,34 +31,33 @@ export default function Home() {
     }
 
     useEffect(() => {
-        fetchData().then()
-    }, [])
+        // clear error
+        setError("")
+
+        // set error message
+        if (status === "error") {
+            setError(
+                "Error while loading pair data. " +
+                "This may be due to a CORS policy limitation from KUCOIN public API. " +
+                "Read project documentation to learn how to avoid it."
+            )
+        }
+
+        // map data when provided
+        if (!!data && symbols.length === 0 ) {
+            let _symbols: any = []
+            data.data.forEach((symbol: any) => {
+                _symbols = [..._symbols, symbol.symbol]
+            })
+            setSymbols(_symbols)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data, status])
 
     useEffect(() => {
         if (!!symbols && symbols.length > 1) setSelectedSymbol(symbols[0])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [symbols])
-
-    // fetch
-    const fetchData = async () => {
-        let uri = "https://openapi-sandbox.kucoin.com/api/v1/symbols"
-
-        APIGet(uri)
-            .then((res: any) => {
-                if (!!res.parsedBody) {
-                    let _symbols: any = []
-                    res.parsedBody.data.forEach((symbol: any) => {
-                        _symbols = [..._symbols, symbol.symbol]
-                    })
-                    setSymbols(_symbols)
-                }
-            })
-            .catch(() => setError(
-                    "Error while loading pair data. " +
-                    "This may be due to a CORS policy limitation from KUCOIN public API. " +
-                    "Read project documentation to learn how to avoid it."
-                )
-            )
-    }
 
     // handleSearch function for form confirmation
     const handleSearch = (e: FormEvent<HTMLFormElement>) => {
@@ -65,9 +67,9 @@ export default function Home() {
 
     // display
     const displaySymbolSelector = () => {
-
-        // TODO: loading state
-
+        // loading
+        if (status === "loading") return <Grid item xs={12}><Skeleton width={"100%"} height={64} /></Grid>
+        // no symbols provided, mostly because of a CORS error
         if (!symbols || symbols.length === 0) return <></>
 
         return (

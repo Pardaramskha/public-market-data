@@ -1,38 +1,38 @@
 import React, {useEffect, useState} from "react"
 // MUI
-import {Grid, Typography} from "@mui/material"
+import {Grid, Skeleton, Typography} from "@mui/material"
 // interface
 import {Tick24} from "../../interfaces/interfaces"
-// API
-import {APIGet} from "../../api/apiCalls"
 // Components
 import RawDataDisplay from "../RawDataDisplay/RawDataDisplay"
 import ErrorAlert from "../ErrorAlert/ErrorAlert"
 // functions
 import {returnDateFromTimestamp} from "../../functions/functions"
+import {useQuery} from "react-query";
+// API
+import {fetchDailyTick} from "../../api/apiCalls";
 
 export default function Ticks24Display(props: any) {
 
     const {symbol} = props
+    const { data, status } = useQuery(symbol, () => fetchDailyTick(symbol))
 
     const [ticksData, setTicksData] = useState<Tick24 | null>(null)
     // could be replaced by global error management system
     const [error, setError] = useState<string>("")
 
     useEffect(() => {
-        if (!!symbol) fetchTick().then()
+        // clear error
+        setError("")
+        // set error message for blank page
+        if (!symbol) setError("No pair was provided!")
+
+        if (!!symbol) {
+            if (status === "error") setError("Error while retrieving pair ticks data")
+            if (!!data) setTicksData(data.data)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [symbol])
-
-
-    const fetchTick = async () => {
-        // TODO: could be placed in .env
-        let uri = `https://openapi-sandbox.kucoin.com/api/v1/market/stats?symbol=${symbol}`
-
-        APIGet(uri)
-            .then((res: any) => { if (!!res.parsedBody) setTicksData(res.parsedBody.data) })
-            .catch(() => setError("Error while retrieving pair ticks data"))
-    }
+    }, [data, status])
 
     // display
     const displayDataGrid = () => {
@@ -67,7 +67,11 @@ export default function Ticks24Display(props: any) {
         }
     }
 
-    if (!ticksData) return <Typography fontWeight={700}>No ticks data available for this pair</Typography>
+    if (status === "error" || error) return <ErrorAlert text={error} />
+
+    if (status === "loading") return <Skeleton width={"100%"} height={150} />
+
+    if (!data && status === "success") return <Typography fontWeight={700}>No ticks data available for this pair</Typography>
 
     return (
         <>
@@ -77,8 +81,6 @@ export default function Ticks24Display(props: any) {
                 </Grid>
 
                 {displayDataGrid()}
-
-                {error && <Grid item xs={12} lg={7}><ErrorAlert text={error} /></Grid>}
             </Grid>
         </>
     )

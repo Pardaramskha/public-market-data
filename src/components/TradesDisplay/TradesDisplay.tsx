@@ -1,53 +1,58 @@
 import React, {useEffect, useState} from "react"
 // API
-import {APIGet} from "../../api/apiCalls"
+import {fetchTrades} from "../../api/apiCalls"
 // MUI
-import {Button, Grid, List, ListItem} from "@mui/material"
+import {Button, Grid, List, ListItem, Skeleton, Typography} from "@mui/material"
 // Functions
 import {returnDateFrom19Timestamp} from "../../functions/functions"
 // Components
 import ErrorAlert from "../ErrorAlert/ErrorAlert"
 // Interfaces
 import {Trade} from "../../interfaces/interfaces"
-
+// Queries
+import {useQuery} from "react-query";
+// Styles
+import {styles} from "./styles";
 
 export default function TradesDisplay(props: any) {
 
     const {symbol} = props
+    const { data, status } = useQuery(`trades-${symbol}`, () => fetchTrades(symbol))
 
     const [tradesData, setTradesData] = useState<Trade[] | null>(null)
     const [sortedTrades, setSortedTrades] = useState<Trade[] | null>(null)
     // filters
     const [activeFilter, setActiveFilter] = useState<string>("")
+    // error management
     // could be replaced by global error management system
     const [error, setError] = useState<string>("")
 
+    // init data hydration
     useEffect(() => {
-        if (!!symbol) fetchTrades().then()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [symbol])
+        // clear error
+        setError("")
+        // set error message for blank page
+        if (!symbol) setError("No pair was provided!")
 
+        if (!!symbol) {
+            if (status === "error") setError("Error while retrieving pair trades data")
+            if (!!data) setTradesData(data.data); console.log(data)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data, status])
+
+    // init filtered data hydration
     useEffect(() => {
         if (!tradesData) return
         if (!sortedTrades) sortTrades()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tradesData])
 
+    // sort trades on filter change
     useEffect(() => {
         sortTrades()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeFilter])
-
-    // fetch data
-    const fetchTrades = async () => {
-        if (!!tradesData) return null
-        // TODO: could be placed in .env
-        let uri = `https://openapi-sandbox.kucoin.com/api/v1/market/histories?symbol=${symbol}`
-
-        APIGet(uri)
-            .then((res: any) => { if (!!res.parsedBody) setTradesData(res.parsedBody.data) })
-            .catch(() => setError("Error while retrieving pair trades data"))
-    }
 
     // sort data
     const sortTrades = () => {
@@ -99,7 +104,8 @@ export default function TradesDisplay(props: any) {
                                 variant={!!activeFilter && activeFilter === button.key ? "contained" : "outlined"}
                                 onClick={() => setActiveFilter(button.key)}
                                 disableElevation
-                                sx={{ mr: 1 }}
+                                sx={styles.filterButtons}
+                                disabled={!sortedTrades || sortedTrades.length === 0}
                                 key={index}
                             >
                                 {button.label}
@@ -112,6 +118,13 @@ export default function TradesDisplay(props: any) {
     }
 
     const displayDataGrid = () => {
+
+        if (!sortedTrades || sortedTrades.length === 0) return(
+            <ListItem>
+                <Typography fontWeight={700}>No trade data for this pair</Typography>
+            </ListItem>
+        )
+
         return (
             <>
                 {
@@ -120,8 +133,7 @@ export default function TradesDisplay(props: any) {
                             <ListItem
                                 key={index}
                                 sx={{
-                                    border: "1px solid",
-                                    borderColor: "divider",
+                                    ...styles.tradeListItem,
                                     backgroundColor: trade.side === "sell" ? "rgba(239,83,80,0.5)" : "rgba(76,176,80,0.5)"
                                 }}
                             >
@@ -139,24 +151,29 @@ export default function TradesDisplay(props: any) {
         )
     }
 
+    if (status === "error" || error) return <ErrorAlert text={error} />
+
+    if (status === "loading") return <Skeleton width={"100%"} height={150} />
+
     return (
         <>
             <List>
                 <ListItem>
                     {displayFilterButtons()}
                 </ListItem>
-                <ListItem>
+                <ListItem sx={styles.tableHeader}>
                     <Grid container spacing={2} justifyContent={"space-between"}>
-                        <Grid item xs={10} lg={3} textAlign={"center"}>Time</Grid>
-                        <Grid item xs={10} lg={3} textAlign={"center"}>Side</Grid>
-                        <Grid item xs={10} lg={3} textAlign={"center"}>Price</Grid>
-                        <Grid item xs={10} lg={3} textAlign={"center"}>Size</Grid>
+                        {
+                            ["Time", "Side", "Price", "Size"].map((el: string, index: number) => (
+                                <Grid item xs={10} lg={3} textAlign={"center"} key={index}>
+                                    <Typography fontWeight={700} color={"primary"}>{el}</Typography>
+                                </Grid>
+                            ))
+                        }
                     </Grid>
                 </ListItem>
 
                 {displayDataGrid()}
-
-                {error && <ErrorAlert text={error} />}
             </List>
         </>
     )
