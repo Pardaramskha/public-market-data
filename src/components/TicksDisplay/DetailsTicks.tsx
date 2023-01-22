@@ -5,14 +5,14 @@ import {Divider, Grid, Typography} from "@mui/material";
 // Functions
 import {returnDateFromTimestamp} from "../../functions/functions";
 // Interfaces
-import {Ticker} from "../../interfaces/interfaces";
+import {Tick} from "../../interfaces/interfaces";
 import RawDataDisplay from "../RawDataDisplay/RawDataDisplay";
 
 export default function DetailsTicks(props: any) {
 
     const {symbol} = props
 
-    const [ticksData, setTicksData] = useState<Ticker | null>(null)
+    const [ticksData, setTicksData] = useState<Tick | null>(null)
     // could be replaced by global error management system
     const [error, setError] = useState<string>("")
 
@@ -22,6 +22,7 @@ export default function DetailsTicks(props: any) {
 
 
     const fetchTicks = async () => {
+        // TODO: could be placed in .env
         let uri = `https://openapi-sandbox.kucoin.com/api/v1/market/orderbook/level1?symbol=${symbol}`
 
         APIGet(uri)

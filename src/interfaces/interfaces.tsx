@@ -1,7 +1,7 @@
 import React from "react";
 
 
-interface Ticker {
+interface Tick {
     sequence: string
     bestAsk: string
     size: string
@@ -10,6 +10,33 @@ interface Ticker {
     bestBid: string
     bestAskSize: string
     time: number
+}
+
+interface Trade {
+    price: string
+    sequence: string
+    side: string
+    size: string
+    time: number
+}
+
+interface Tick24 {
+    time: number
+    symbol: string
+    buy: string
+    sell: string
+    changeRate: string
+    changePrice: string
+    high: string
+    low: string
+    vol: string
+    volValue: string
+    last: string
+    averagePrice: string
+    takerFeeRate: string
+    makerFeeRate: string
+    takerCoefficient: string
+    makerCoefficient: string
 }
 
 // MUI
@@ -25,4 +52,4 @@ interface ErrorAlertProps {
 }
 
 
-export type { Ticker, TabPanelProps, ErrorAlertProps }
+export type { Tick, TabPanelProps, ErrorAlertProps, Trade, Tick24 }

@@ -7,6 +7,7 @@ import DetailsTicks from "../components/TicksDisplay/DetailsTicks";
 // Interfaces
 import {TabPanelProps} from "../interfaces/interfaces";
 import TradesDisplay from "../components/TradesDisplay/TradesDisplay";
+import Ticks24Display from "../components/Ticks24Display/Ticks24Display";
 
 function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
@@ -67,7 +68,7 @@ export default function PairDetails() {
                                 <DetailsTicks symbol={params.get("symbol")} />
                             </TabPanel>
                             <TabPanel value={selectedTab} index={1}>
-                                Item Two
+                                <Ticks24Display symbol={params.get("symbol")} />
                             </TabPanel>
                             <TabPanel value={selectedTab} index={2}>
                                 <TradesDisplay symbol={params.get("symbol")} />
