@@ -65,7 +65,7 @@ export default function PairDetails() {
                         <Grid item xs={12}>
                             <Tabs value={selectedTab} onChange={handleChange} aria-label="pair details tabs">
                                 <Tab label="Ticks" {...commonTabProps(0)} />
-                                <Tab label="Ticks 24h" {...commonTabProps(1)} />
+                                <Tab label="24h details" {...commonTabProps(1)} />
                                 <Tab label="Trades" {...commonTabProps(2)} />
                             </Tabs>
                         </Grid>

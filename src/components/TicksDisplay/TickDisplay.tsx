@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react"
 // MUI
-import {Divider, Grid, Typography} from "@mui/material";
+import {Divider, Grid, Typography} from "@mui/material"
 // API
-import {APIGet} from "../../api/apiCalls";
+import {APIGet} from "../../api/apiCalls"
 // Functions
-import {returnDateFromTimestamp} from "../../functions/functions";
+import {returnDateFromTimestamp} from "../../functions/functions"
 // Interfaces
-import {Tick} from "../../interfaces/interfaces";
+import {Tick} from "../../interfaces/interfaces"
 // Components
-import RawDataDisplay from "../RawDataDisplay/RawDataDisplay";
+import RawDataDisplay from "../RawDataDisplay/RawDataDisplay"
+import ErrorAlert from "../ErrorAlert/ErrorAlert"
 
 export default function TickDisplay(props: any) {
 
@@ -20,6 +21,7 @@ export default function TickDisplay(props: any) {
 
     useEffect(() => {
         if (!!symbol) fetchTicks().then()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [symbol])
 
     // fetch
@@ -28,7 +30,7 @@ export default function TickDisplay(props: any) {
         let uri = `https://openapi-sandbox.kucoin.com/api/v1/market/orderbook/level1?symbol=${symbol}`
 
         APIGet(uri)
-            .then((res: any) => { if (!!res.parsedBody) setTicksData(res.parsedBody.data); console.log(res.parsedBody.data) })
+            .then((res: any) => { if (!!res.parsedBody) setTicksData(res.parsedBody.data) })
             .catch(() => setError("Error while retrieving pair ticks data"))
     }
 
@@ -61,7 +63,7 @@ export default function TickDisplay(props: any) {
         }
     }
 
-    if (!ticksData) return <Typography fontWeight={700}>No ticker data available for this pair</Typography>
+    if (!ticksData) return <Typography fontWeight={700}>No tick data available for this pair</Typography>
 
     return (
         <>
@@ -69,7 +71,10 @@ export default function TickDisplay(props: any) {
                 <Grid item xs={12} lg={3}>
                     <RawDataDisplay title={"Pair"} data={symbol} primary />
                 </Grid>
+
                 {displayDataGrid()}
+
+                {error && <Grid item xs={12} lg={7}><ErrorAlert text={error} /></Grid>}
             </Grid>
         </>
     )

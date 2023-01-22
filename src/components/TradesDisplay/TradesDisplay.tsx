@@ -1,9 +1,14 @@
 import React, {useEffect, useState} from "react"
-import {APIGet} from "../../api/apiCalls";
-import {Button, Grid, List, ListItem} from "@mui/material";
-import {returnDateFrom19Timestamp, returnDateFromTimestamp} from "../../functions/functions";
-import ErrorAlert from "../ErrorAlert/ErrorAlert";
-import {Trade} from "../../interfaces/interfaces";
+// API
+import {APIGet} from "../../api/apiCalls"
+// MUI
+import {Button, Grid, List, ListItem} from "@mui/material"
+// Functions
+import {returnDateFrom19Timestamp} from "../../functions/functions"
+// Components
+import ErrorAlert from "../ErrorAlert/ErrorAlert"
+// Interfaces
+import {Trade} from "../../interfaces/interfaces"
 
 
 export default function TradesDisplay(props: any) {
@@ -19,15 +24,18 @@ export default function TradesDisplay(props: any) {
 
     useEffect(() => {
         if (!!symbol) fetchTrades().then()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [symbol])
 
     useEffect(() => {
         if (!tradesData) return
         if (!sortedTrades) sortTrades()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tradesData])
 
     useEffect(() => {
         sortTrades()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeFilter])
 
     // fetch data
@@ -36,9 +44,9 @@ export default function TradesDisplay(props: any) {
         // TODO: could be placed in .env
         let uri = `https://openapi-sandbox.kucoin.com/api/v1/market/histories?symbol=${symbol}`
 
-        APIGet(uri).then((res: any) => {
-            if (!!res.parsedBody) setTradesData(res.parsedBody.data); console.log(res.parsedBody.data)
-        }).catch(() => setError("Error while retrieving pair trades data"))
+        APIGet(uri)
+            .then((res: any) => { if (!!res.parsedBody) setTradesData(res.parsedBody.data) })
+            .catch(() => setError("Error while retrieving pair trades data"))
     }
 
     // sort data
@@ -146,9 +154,9 @@ export default function TradesDisplay(props: any) {
                     </Grid>
                 </ListItem>
 
-                {error && <ErrorAlert text={error} />}
-
                 {displayDataGrid()}
+
+                {error && <ErrorAlert text={error} />}
             </List>
         </>
     )

@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom"
 // API
 import {APIGet} from "../api/apiCalls"
 // MUI
-import {Button, Container, Grid, MenuItem, Paper, Select, Typography} from "@mui/material";
+import {Autocomplete, Button, Container, Grid, Paper, TextField, Typography} from "@mui/material";
 // Components
 import ErrorAlert from "../components/ErrorAlert/ErrorAlert"
 
@@ -13,15 +13,18 @@ export default function Home() {
     const navigate = useNavigate()
 
     // states
-    const [symbols, setSymbols] = React.useState<string[]>([])
-    const [selectedSymbol, setSelectedSymbol] = React.useState<any>("a")
+    const [symbols, setSymbols] = useState<string[]>([])
+    const [selectedSymbol, setSelectedSymbol] = useState<any>("a")
+    // autocomplete
+    const [autocompleteValue, setAutocompleteValue] = useState<any>("")
     // could be replaced by global error management system
     const [error, setError] = useState<string>("")
 
     const styles = {
-        container: { p: 10 },
+        container: { p: { xs: 3, md: 6, xl: 10 } },
         paper: { p: 3 },
-        selectMenu: { maxHeight: 300 }
+        selectMenu: { maxHeight: 300 },
+        buttonWrapper: { display: "flex", justifyContent: "center", alignItems: "center" }
     }
 
     useEffect(() => {
@@ -63,22 +66,32 @@ export default function Home() {
     // display
     const displaySymbolSelector = () => {
 
+        // TODO: loading state
+
         if (!symbols || symbols.length === 0) return <></>
 
         return (
-            <Select
-                size={"small"}
-                fullWidth
-                value={selectedSymbol}
-                onChange={(e) => setSelectedSymbol(e.target.value)}
-                MenuProps={{ sx: styles.selectMenu }}
-            >
-                {symbols.map((symbol: any, index: number) => (
-                    <MenuItem key={index} value={symbol}>
-                        {symbol}
-                    </MenuItem>
-                ))}
-            </Select>
+            <>
+                <Grid item xs={12} sm={6} md={5} lg={4} xl={3}>
+                    <Autocomplete
+                        value={selectedSymbol}
+                        onChange={(e: any, selected: string | null) => setSelectedSymbol(selected)}
+                        inputValue={autocompleteValue}
+                        onInputChange={(e, newInputValue) => setAutocompleteValue(newInputValue)}
+                        renderInput={(params) => <TextField {...params} label={"Pairs"} />}
+                        options={symbols}
+                    />
+                </Grid>
+                <Grid item xs={12} lg={"auto"} textAlign={"center"} sx={styles.buttonWrapper}>
+                    <Button
+                        variant={"contained"}
+                        type={"submit"}
+                        disabled={!selectedSymbol}
+                    >
+                        Search
+                    </Button>
+                </Grid>
+            </>
         )
     }
 
@@ -89,23 +102,16 @@ export default function Home() {
 
                     <form onSubmit={(e) => handleSearch(e)}>
                         <Grid container justifyContent={"center"} spacing={4}>
+
                             <Grid item xs={12}>
                                 <Typography variant={"h4"} component={"h1"} align={"center"}>
                                     Public market data
                                 </Typography>
                             </Grid>
-                            <Grid item xs={12} lg={6}>
-                                {displaySymbolSelector()}
-                            </Grid>
-                            <Grid item xs={12} lg={"auto"} textAlign={"center"}>
-                                <Button variant={"contained"} size={"small"} type={"submit"}>
-                                    Search
-                                </Button>
-                            </Grid>
 
-                            <Grid item xs={12} lg={7}>
-                                <ErrorAlert text={error} />
-                            </Grid>
+                            {displaySymbolSelector()}
+
+                            {error && <Grid item xs={12} lg={7}><ErrorAlert text={error} /></Grid>}
                         </Grid>
                     </form>
 

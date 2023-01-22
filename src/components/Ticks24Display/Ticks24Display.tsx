@@ -7,6 +7,7 @@ import {Tick24} from "../../interfaces/interfaces"
 import {APIGet} from "../../api/apiCalls"
 // Components
 import RawDataDisplay from "../RawDataDisplay/RawDataDisplay"
+import ErrorAlert from "../ErrorAlert/ErrorAlert"
 // functions
 import {returnDateFromTimestamp} from "../../functions/functions"
 
@@ -20,6 +21,7 @@ export default function Ticks24Display(props: any) {
 
     useEffect(() => {
         if (!!symbol) fetchTick().then()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [symbol])
 
 
@@ -28,7 +30,7 @@ export default function Ticks24Display(props: any) {
         let uri = `https://openapi-sandbox.kucoin.com/api/v1/market/stats?symbol=${symbol}`
 
         APIGet(uri)
-            .then((res: any) => { if (!!res.parsedBody) setTicksData(res.parsedBody.data); console.log(res.parsedBody.data) })
+            .then((res: any) => { if (!!res.parsedBody) setTicksData(res.parsedBody.data) })
             .catch(() => setError("Error while retrieving pair ticks data"))
     }
 
@@ -73,7 +75,10 @@ export default function Ticks24Display(props: any) {
                 <Grid item>
                     <RawDataDisplay title={"Pair"} data={symbol} primary />
                 </Grid>
+
                 {displayDataGrid()}
+
+                {error && <Grid item xs={12} lg={7}><ErrorAlert text={error} /></Grid>}
             </Grid>
         </>
     )
