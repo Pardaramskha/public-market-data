@@ -1,9 +1,11 @@
 import React, {FormEvent, useEffect, useState} from "react"
-import {APIGet} from "../api/apiCalls";
+import {useNavigate} from "react-router-dom"
+// API
+import {APIGet} from "../api/apiCalls"
+// MUI
 import {Button, Container, Grid, MenuItem, Paper, Select, Typography} from "@mui/material";
-import {useQuery} from "react-query";
-import {useNavigate} from "react-router-dom";
-import ErrorAlert from "../components/ErrorAlert/ErrorAlert";
+// Components
+import ErrorAlert from "../components/ErrorAlert/ErrorAlert"
 
 
 export default function Home() {
@@ -11,16 +13,26 @@ export default function Home() {
     const navigate = useNavigate()
 
     // states
-    const [symbols, setSymbols] = React.useState<any>(["a", "b", "c"])
+    const [symbols, setSymbols] = React.useState<string[]>([])
     const [selectedSymbol, setSelectedSymbol] = React.useState<any>("a")
     // could be replaced by global error management system
     const [error, setError] = useState<string>("")
 
     const styles = {
         container: { p: 10 },
-        paper: { p: 3 }
+        paper: { p: 3 },
+        selectMenu: { maxHeight: 300 }
     }
 
+    useEffect(() => {
+        fetchData().then()
+    }, [])
+
+    useEffect(() => {
+        if (!!symbols && symbols.length > 1) setSelectedSymbol(symbols[0])
+    }, [symbols])
+
+    // fetch
     const fetchData = async () => {
         let uri = "https://openapi-sandbox.kucoin.com/api/v1/symbols"
 
@@ -35,28 +47,23 @@ export default function Home() {
                 }
             })
             .catch(() => setError(
-                "Error while loading pair data. " +
-                "This may be due to a CORS policy limitation from KUCOIN public API. " +
-                "Read project documentation to learn how to avoid it."
+                    "Error while loading pair data. " +
+                    "This may be due to a CORS policy limitation from KUCOIN public API. " +
+                    "Read project documentation to learn how to avoid it."
                 )
             )
     }
 
+    // handleSearch function for form confirmation
+    const handleSearch = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        navigate(`/details?symbol=${selectedSymbol}`)
+    }
 
-    // first, get symbols list
-    // then map symbols list into an array
-    useEffect(() => {
-        fetchData().then()
-    }, [])
-
-    useEffect(() => {
-        if (!!symbols && symbols.length > 1) setSelectedSymbol(symbols[0])
-    }, [symbols])
-
-    // then return a <select> containing all symbols - loader if loading
+    // display
     const displaySymbolSelector = () => {
 
-        if (!symbols) return <></>
+        if (!symbols || symbols.length === 0) return <></>
 
         return (
             <Select
@@ -64,11 +71,7 @@ export default function Home() {
                 fullWidth
                 value={selectedSymbol}
                 onChange={(e) => setSelectedSymbol(e.target.value)}
-                MenuProps={{
-                    sx: {
-                        maxHeight: 300
-                    }
-                }}
+                MenuProps={{ sx: styles.selectMenu }}
             >
                 {symbols.map((symbol: any, index: number) => (
                     <MenuItem key={index} value={symbol}>
@@ -79,16 +82,11 @@ export default function Home() {
         )
     }
 
-    // handleSearch function for form confirmation
-    const handleSearch = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        navigate(`/details?symbol=${selectedSymbol}`)
-    }
-
     return (
         <>
             <Container sx={styles.container}>
                 <Paper variant={"outlined"} sx={styles.paper}>
+
                     <form onSubmit={(e) => handleSearch(e)}>
                         <Grid container justifyContent={"center"} spacing={4}>
                             <Grid item xs={12}>

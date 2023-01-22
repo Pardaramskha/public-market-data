@@ -1,5 +1,7 @@
 import React from "react"
+// MUI
 import {Paper, Typography} from "@mui/material";
+// styles
 import {styles} from "./styles";
 
 export default function RawDataDisplay(props: any) {

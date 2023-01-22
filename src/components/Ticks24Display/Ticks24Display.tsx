@@ -1,9 +1,14 @@
 import React, {useEffect, useState} from "react"
-import {Tick24} from "../../interfaces/interfaces";
-import {APIGet} from "../../api/apiCalls";
-import {Grid, Typography} from "@mui/material";
-import RawDataDisplay from "../RawDataDisplay/RawDataDisplay";
-import {returnDateFromTimestamp} from "../../functions/functions";
+// MUI
+import {Grid, Typography} from "@mui/material"
+// interface
+import {Tick24} from "../../interfaces/interfaces"
+// API
+import {APIGet} from "../../api/apiCalls"
+// Components
+import RawDataDisplay from "../RawDataDisplay/RawDataDisplay"
+// functions
+import {returnDateFromTimestamp} from "../../functions/functions"
 
 export default function Ticks24Display(props: any) {
 
@@ -27,6 +32,39 @@ export default function Ticks24Display(props: any) {
             .catch(() => setError("Error while retrieving pair ticks data"))
     }
 
+    // display
+    const displayDataGrid = () => {
+        if (!!ticksData) {
+            const dataMap = [
+                { label: "Date", data: returnDateFromTimestamp(ticksData?.time) },
+                { label: "Average price", data: ticksData.averagePrice },
+                { label: "Best ask", data: ticksData.buy },
+                { label: "Best bid", data: ticksData.sell },
+                { label: "Volume", data: ticksData.vol },
+                { label: "Change rate", data: ticksData.changeRate },
+                { label: "Change price", data: ticksData.changePrice },
+                { label: "Volume value", data: ticksData.volValue },
+                { label: "Highest price", data: ticksData.high },
+                { label: "Lowest price", data: ticksData.low },
+                { label: "Last price", data: ticksData.last },
+                { label: "Taker fee rate", data: ticksData.takerFeeRate },
+                { label: "Maker fee rate", data: ticksData.makerFeeRate },
+                { label: "Taker coefficient", data: ticksData.takerCoefficient },
+                { label: "Maker coefficient", data: ticksData.makerCoefficient },
+            ]
+
+            return (
+                <>
+                    {
+                        dataMap.map((object, index:number) => {
+                            return <Grid item key={index}><RawDataDisplay title={object.label} data={object.data} /></Grid>
+                        })
+                    }
+                </>
+            )
+        }
+    }
+
     if (!ticksData) return <Typography fontWeight={700}>No ticks data available for this pair</Typography>
 
     return (
@@ -35,59 +73,7 @@ export default function Ticks24Display(props: any) {
                 <Grid item>
                     <RawDataDisplay title={"Pair"} data={symbol} primary />
                 </Grid>
-                <Grid item>
-                    <RawDataDisplay title={"Tick date"} data={returnDateFromTimestamp(ticksData?.time)} />
-                </Grid>
-                <Grid item>
-                    <RawDataDisplay title={"Average price"} data={ticksData.averagePrice} />
-                </Grid>
-
-
-                <Grid item>
-                    <RawDataDisplay title={"Best ask"} data={ticksData.buy} />
-                </Grid>
-                <Grid item>
-                    <RawDataDisplay title={"Best bid"} data={ticksData.sell} />
-                </Grid>
-                <Grid item>
-                    <RawDataDisplay title={"Volume"} data={ticksData.vol} />
-                </Grid>
-
-
-                <Grid item>
-                    <RawDataDisplay title={"Change rate"} data={ticksData.changeRate} />
-                </Grid>
-                <Grid item>
-                    <RawDataDisplay title={"Change price"} data={ticksData.changePrice} />
-                </Grid>
-                <Grid item>
-                    <RawDataDisplay title={"Volume value"} data={ticksData.volValue} />
-                </Grid>
-
-
-                <Grid item>
-                    <RawDataDisplay title={"Highest price"} data={ticksData.high} />
-                </Grid>
-                <Grid item>
-                    <RawDataDisplay title={"Lowest price"} data={ticksData.low} />
-                </Grid>
-                <Grid item>
-                    <RawDataDisplay title={"Last price"} data={ticksData.last} />
-                </Grid>
-
-
-                <Grid item>
-                    <RawDataDisplay title={"Taker fee rate"} data={ticksData.takerFeeRate} />
-                </Grid>
-                <Grid item>
-                    <RawDataDisplay title={"Maker fee rate"} data={ticksData.makerFeeRate} />
-                </Grid>
-                <Grid item>
-                    <RawDataDisplay title={"Taker coefficient"} data={ticksData.takerCoefficient} />
-                </Grid>
-                <Grid item>
-                    <RawDataDisplay title={"Maker coefficient"} data={ticksData.makerCoefficient} />
-                </Grid>
+                {displayDataGrid()}
             </Grid>
         </>
     )

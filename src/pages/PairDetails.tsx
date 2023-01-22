@@ -1,13 +1,14 @@
 import React, {useState} from "react"
-import {Link, useSearchParams} from "react-router-dom";
+import {Link, useSearchParams} from "react-router-dom"
 // MUI
-import {Container, Grid, Paper, Tabs, Tab, Typography, Button} from "@mui/material";
+import {Container, Grid, Paper, Tabs, Tab, Typography, Button} from "@mui/material"
 // Components
-import DetailsTicks from "../components/TicksDisplay/DetailsTicks";
+import TickDisplay from "../components/TicksDisplay/TickDisplay"
+import Ticks24Display from "../components/Ticks24Display/Ticks24Display"
+import TradesDisplay from "../components/TradesDisplay/TradesDisplay"
 // Interfaces
-import {TabPanelProps} from "../interfaces/interfaces";
-import TradesDisplay from "../components/TradesDisplay/TradesDisplay";
-import Ticks24Display from "../components/Ticks24Display/Ticks24Display";
+import {TabPanelProps} from "../interfaces/interfaces"
+
 
 function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
@@ -37,6 +38,11 @@ export default function PairDetails() {
     const [params] = useSearchParams()
     const [selectedTab, setSelectedTab] = useState<number>(0)
 
+    const styles = {
+        paper: { width: "100%", p: 4 },
+        titleWrapper: { display: "flex", flexDirection: "column", justifyContent: "center" }
+    }
+
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setSelectedTab(newValue);
     };
@@ -44,14 +50,14 @@ export default function PairDetails() {
     return (
         <>
             <Container maxWidth={"lg"}>
-                <Paper variant={"outlined"} sx={{ width: "100%", p: 4 }}>
+                <Paper variant={"outlined"} sx={styles.paper}>
                     <Grid container justifyContent={"center"} spacing={4}>
                         <Grid item>
                             <Button component={Link} to={"/"} variant={"outlined"}>
                                 Back
                             </Button>
                         </Grid>
-                        <Grid item xs={10} sx={{ display: "flex", flexDirection: "column", justifyContent: "center"}}>
+                        <Grid item xs={10} sx={styles.titleWrapper}>
                             <Typography variant={"h5"} component={"h1"}>
                                 Pair details
                             </Typography>
@@ -65,7 +71,7 @@ export default function PairDetails() {
                         </Grid>
                         <Grid item xs={12}>
                             <TabPanel value={selectedTab} index={0}>
-                                <DetailsTicks symbol={params.get("symbol")} />
+                                <TickDisplay symbol={params.get("symbol")} />
                             </TabPanel>
                             <TabPanel value={selectedTab} index={1}>
                                 <Ticks24Display symbol={params.get("symbol")} />
