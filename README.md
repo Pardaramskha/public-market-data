@@ -31,6 +31,7 @@ I had to use **a CORS bypassing plugin** in order to make it work. Do NOT do thi
 * I didn't know anything about cryptos or finance when starting this, so I had to deal with frightening words.
 * I used **Material UI** instead of **styled-components** for its powerful Autocomplete and Tabs components.
 * I learned how to use **react-query** in the meantime - this stuff is good when you have to deal with loading states!
+* I (tried) to learn how to do Docker stuff. I'm not used to it yet, but hey - as long as it works... (may be improved by doing a two-steps build)
 
 ## ❓ What could have been done
 * Could've use a **.env** file to store API base endpoint
