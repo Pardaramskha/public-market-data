@@ -5,10 +5,8 @@ const returnDateFromTimestamp = (timestamp: number) => {
 
 }
 
-// TODO: debug
 const returnDateFrom19Timestamp = (timestamp: number) => {
-    let _time = timestamp.toString().substring(0,13)
-    let date = new Date(_time as unknown as number)
+    let date = new Date(timestamp / 1000000)
     return date.getHours() + ":" + date.getMinutes() + ", "+ date.toDateString();
 }
 
