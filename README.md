@@ -2,6 +2,10 @@
 
 This project was made as a technical test for a junior frontend job.
 
+## Setup
+``docker build -t public-market-data .``
+``docker run -p 3000:3000 -d public-market-data``
+
 ## 👁 Task overview
 
 ### Goal
